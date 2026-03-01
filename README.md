@@ -12,7 +12,7 @@ It wrote the code, ran away, and now the game is unplayable.
 ## 🛠️ Setup
 
 1. Install dependencies: `pip install -r requirements.txt`
-2. Run the broken app: `python -m streamlit run app.py`
+2. Run the app: `python -m streamlit run app.py`
 
 ## 🕵️‍♂️ Your Mission
 
@@ -25,13 +25,35 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+**Game purpose:** A number guessing game where the player tries to guess a randomly chosen secret number within a set number of attempts. The difficulty setting controls the range of possible numbers and the attempt limit.
+
+**Bugs found:**
+
+| # | Location | Bug |
+|---|----------|-----|
+| 1 | `check_guess` | Hint messages were backwards — "Go HIGHER!" when guess was too high |
+| 2 | Submit handler | Secret was cast to `str` on even attempts, breaking integer comparison |
+| 3 | `get_range_for_difficulty` | Hard difficulty returned 1–50, a narrower (easier) range than Normal (1–100) |
+| 4 | Session state init | `attempts` started at `1` instead of `0`, costing the player one attempt silently |
+| 5 | New Game handler | Always called `randint(1, 100)` regardless of selected difficulty |
+| 6 | Info banner | Hardcoded "between 1 and 100" regardless of difficulty |
+| 7 | `update_score` | "Too High" outcome added +5 points on even attempts instead of subtracting |
+| 8 | New Game handler | Never reset `status` or `history`, so the game stayed locked after a win/loss |
+
+**Fixes applied:**
+
+- Swapped the "Go HIGHER!" / "Go LOWER!" messages in `check_guess`
+- Removed the `str()` cast; always compare guess to the integer secret
+- Changed Hard range to 1–500
+- Changed `attempts` initialization to `0`
+- Updated New Game handler to use `randint(low, high)`
+- Updated info banner to use `{low}` and `{high}` variables
+- Removed the even-attempt score bonus; wrong guesses always subtract 5
+- Added `status = "playing"` and `history = []` resets to the New Game handler
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+![Fixed winning game](Screenshot%202026-03-01%20at%202.26.08%20PM.png)
 
 ## 🚀 Stretch Features
 
